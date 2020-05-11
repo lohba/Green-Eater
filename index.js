@@ -2,7 +2,6 @@ const express = require('express');
 var request = require('request');
 
 const app = express();
-
 app.get('/search', function(req, res) {
     var options = {
         'method': 'GET',
