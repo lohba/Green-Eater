@@ -50,28 +50,41 @@ const testRequest = function(req, res) {
 // POST request 
 //ID and sustainabiltiy rating
 //The data sent to the server with POST is stored in the request body of the HTTP request:
+//${id}
 const ratingRequest = function (req, res) {
-    console.log(req.body.id);
-    res.send("helloo")
-}
-
-const idRequest = function(req, res) {
+    
     var options = {
         'method': 'GET',
-        'url': `https://api.yelp.com/v3/businesses/${id}`,
+        'url': `https://api.yelp.com/v3/businesses/${req.body.id}`,
         'headers': {
             'Authorization': 'Bearer mxBzGh0rfHIhoMZJjbkVdLClsarZFfCf-RtU7U1EzOzN7kEWTHUSCJEB-H_L638R_3D69s1ua7kDOvp5Cza47AqmU1u5YBgOmIwTTZkV5ZqajygKoMI6s-ALVeiAXnYx'
         }
       };
+      
       request(options, function (error, response) { 
         if (error) throw new Error(error);
-        res.send(response.body);
-      })
-    }
-//use id to pull Yelp data
-//add to testData 
+        let jsonData = JSON.parse(response.body)
+        //res.send(response.body);
+        let ratingOutput = {
+            category: jsonData.categories,
+            location: jsonData.location,
+            coordinates: jsonData.coordinates,
+            id: jsonData.id
+        };
+        //let testRating testData.testData.push(ratingOutput)
+        
+        //console.log( testData.testData.push(ratingOutput))
+        //let testArray = testData.testData;
+        console.log(typeof jsonData)
 
-module.exports = {searchRequest, testRequest, ratingRequest, idRequest };
+        //console.log(response.body)
+      })
+    
+}
+
+//use "id" in POST rating request to pull all rest. data
+// update testData with all the keys
+module.exports = {searchRequest, testRequest, ratingRequest };
 
 
 
