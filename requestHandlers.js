@@ -64,22 +64,18 @@ const ratingRequest = function (req, res) {
       request(options, function (error, response) { 
         if (error) throw new Error(error);
         let jsonData = JSON.parse(response.body)
+        let places = testData.testData
         //res.send(response.body);
         let ratingOutput = {
             category: jsonData.categories,
             location: jsonData.location,
             coordinates: jsonData.coordinates,
-            id: jsonData.id
+            id: jsonData.id,
+            rating: req.body.rating
         };
-        //let testRating testData.testData.push(ratingOutput)
-        
-        //console.log( testData.testData.push(ratingOutput))
-        //let testArray = testData.testData;
-        console.log(typeof jsonData)
-
-        //console.log(response.body)
+        places.push(ratingOutput)
+        res.send(places)
       })
-    
 }
 
 //use "id" in POST rating request to pull all rest. data
