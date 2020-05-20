@@ -1,4 +1,5 @@
 var request = require('request');
+
 var testData = require('./testData');
 
 
@@ -46,13 +47,12 @@ const testRequest = function(req, res) {
     res.send(filteredPlaces)
    // res.send(array)
 }
-
+ 
 // POST request 
 //ID and sustainabiltiy rating
 //The data sent to the server with POST is stored in the request body of the HTTP request:
 //${id}
 const ratingRequest = function (req, res) {
-    
     var options = {
         'method': 'GET',
         'url': `https://api.yelp.com/v3/businesses/${req.body.id}`,
@@ -63,18 +63,27 @@ const ratingRequest = function (req, res) {
       
       request(options, function (error, response) { 
         if (error) throw new Error(error);
-        let jsonData = JSON.parse(response.body)
-        let places = testData.testData
-        //res.send(response.body);
+        let jsonData = JSON.parse(response.body);
+        let places = testData.testData;
+
         let ratingOutput = {
             category: jsonData.categories,
             location: jsonData.location,
             coordinates: jsonData.coordinates,
             id: jsonData.id,
-            rating: req.body.rating
+            sustainability: req.body.sustainability
         };
-        places.push(ratingOutput)
-        res.send(places)
+       
+        for (var i = 0; i < places.length; i++) {
+            if (ratingOutput.id === places[i].id) {
+                ratingOutput.sustainability = (places[i].sustainability+ratingOutput.sustainability) / 2;
+            }
+        }
+            places.push(ratingOutput);
+            res.send(places);
+
+        // update the restaurant list using ID, displaying restaurants
+        // display the average of rating
       })
 }
 
