@@ -53,6 +53,20 @@ const testRequest = function(req, res) {
 //The data sent to the server with POST is stored in the request body of the HTTP request:
 //${id}
 const ratingRequest = function (req, res) {
+
+    //Before the request, check if id already exists
+    //if it does take the average
+    let places = testData.testData;
+    for (var i = 0; i < places.length; i++) {
+        if (req.body.id === places[i].id) {
+            //console.log(places[i].reviewCount++)
+            //ratingOutput.reviewCount = ratingOutput.reviewCount+1
+            let averageRating = (places[i].sustainability + req.body.sustainability) / (places[i].reviewCount+1)   
+            places.sustainability = averageRating       
+        } 
+    }
+    //places[i].reviewCount++s
+    //places[i].reviewCount++
     var options = {
         'method': 'GET',
         'url': `https://api.yelp.com/v3/businesses/${req.body.id}`,
@@ -64,27 +78,19 @@ const ratingRequest = function (req, res) {
       request(options, function (error, response) { 
         if (error) throw new Error(error);
         let jsonData = JSON.parse(response.body);
-        let places = testData.testData;
 
         let ratingOutput = {
             category: jsonData.categories,
             location: jsonData.location,
             coordinates: jsonData.coordinates,
-            id: jsonData.id,
-            sustainability: req.body.sustainability
+            id: req.body.id,
+            sustainability: req.body.sustainability,
+            reviewCount: 1
         };
-       
-        for (var i = 0; i < places.length; i++) {
-            if (ratingOutput.id === places[i].id) {
-                ratingOutput.sustainability = (places[i].sustainability+ratingOutput.sustainability) / 2;
-            }
-        }
-            places.push(ratingOutput);
-            res.send(places);
-
-        // update the restaurant list using ID, displaying restaurants
-        // display the average of rating
+        
       })
+      
+      res.send(places); 
 }
 
 //use "id" in POST rating request to pull all rest. data
