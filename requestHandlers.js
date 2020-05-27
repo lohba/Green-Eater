@@ -3,6 +3,7 @@ var request = require('request');
 var testData = require('./testData');
 
 
+
 const searchRequest = function(req, res) {
     var options = {
         'method': 'GET',
@@ -31,7 +32,7 @@ const searchRequest = function(req, res) {
 };
 
 const testRequest = function(req, res) {
-    // let array = [];
+
     let places = testData.testData
     let category = req.query.category;
     let zipcode = req.query.location;
@@ -45,28 +46,23 @@ const testRequest = function(req, res) {
     }
     let filteredPlaces = places.filter(restaurant => restaurant.location.zip_code === zipcode && containsCategory(restaurant, category))
     res.send(filteredPlaces)
-   // res.send(array)
+   
 }
  
 // POST request 
 //ID and sustainabiltiy rating
 //The data sent to the server with POST is stored in the request body of the HTTP request:
 //${id}
-const ratingRequest = function (req, res) {
+const ratingRequest = function(req, res) {
 
-    //Before the request, check if id already exists
-    //if it does take the average
     let places = testData.testData;
     for (var i = 0; i < places.length; i++) {
         if (req.body.id === places[i].id) {
-            //console.log(places[i].reviewCount++)
-            //ratingOutput.reviewCount = ratingOutput.reviewCount+1
             let averageRating = (places[i].sustainability + req.body.sustainability) / (places[i].reviewCount+1)   
-            places.sustainability = averageRating       
-        } 
-    }
-    //places[i].reviewCount++s
-    //places[i].reviewCount++
+            places[i].sustainability = averageRating      
+        }
+    } 
+    
     var options = {
         'method': 'GET',
         'url': `https://api.yelp.com/v3/businesses/${req.body.id}`,
@@ -87,11 +83,12 @@ const ratingRequest = function (req, res) {
             sustainability: req.body.sustainability,
             reviewCount: 1
         };
-        
+        places.push(ratingOutput)
       })
       
       res.send(places); 
 }
+
 
 //use "id" in POST rating request to pull all rest. data
 // update testData with all the keys
