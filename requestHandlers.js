@@ -1,8 +1,6 @@
 var request = require('request');
-
 var testData = require('./testData');
-
-
+import {insertData} from './database';
 
 const searchRequest = function(req, res) {
     var options = {
@@ -25,9 +23,11 @@ const searchRequest = function(req, res) {
                 id: jsonData.businesses[i].id
             };
             array.push(business);
+            
         }
         //res.send(array)
         res.send(array)
+        
     })
 };
 
@@ -56,11 +56,14 @@ const testRequest = function(req, res) {
 const ratingRequest = function(req, res) {
 
     let places = testData.testData;
+    let indexOfData = -1;
     for (var i = 0; i < places.length; i++) {
         if (req.body.id === places[i].id) {
-            let averageRating = (places[i].sustainability + req.body.sustainability) / (places[i].reviewCount+1)   
-            places[i].sustainability = averageRating      
-        }
+            places[i].reviewCount++
+            let averageRating = (places[i].sustainability + req.body.sustainability) / (places[i].reviewCount)   
+            places[i].sustainability = averageRating 
+            indexOfData = i
+        } 
     } 
     
     var options = {
@@ -69,9 +72,9 @@ const ratingRequest = function(req, res) {
         'headers': {
             'Authorization': 'Bearer mxBzGh0rfHIhoMZJjbkVdLClsarZFfCf-RtU7U1EzOzN7kEWTHUSCJEB-H_L638R_3D69s1ua7kDOvp5Cza47AqmU1u5YBgOmIwTTZkV5ZqajygKoMI6s-ALVeiAXnYx'
         }
-      };
-      
-      request(options, function (error, response) { 
+    };
+     //return 
+    request(options, function (error, response) { 
         if (error) throw new Error(error);
         let jsonData = JSON.parse(response.body);
 
@@ -83,10 +86,14 @@ const ratingRequest = function(req, res) {
             sustainability: req.body.sustainability,
             reviewCount: 1
         };
-        places.push(ratingOutput)
-      })
-      
-      res.send(places); 
+
+        if (i < -1) {
+            places.push(ratingOutput)
+        } 
+        res.send(places)
+        insertData(ratingOutput.category, ratingOutput.location, ratingOutput.coordinates, ratingOutput)
+    });
+
 }
 
 
