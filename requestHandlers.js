@@ -1,6 +1,6 @@
 var request = require('request');
 var testData = require('./testData');
-import {insertData} from './database';
+var dataBase = require('./database');
 
 const searchRequest = function(req, res) {
     var options = {
@@ -89,11 +89,12 @@ const ratingRequest = function(req, res) {
 
         if (i < -1) {
             places.push(ratingOutput)
+            dataBase.insertData(ratingOutput.category, ratingOutput.location, ratingOutput.coordinates, ratingOutput.id, ratingOutput.sustainability, ratingOutput.reviewCount)
         } 
         res.send(places)
-        insertData(ratingOutput.category, ratingOutput.location, ratingOutput.coordinates, ratingOutput)
+       // console.log(typeof dataBase.insertData )
+        
     });
-
 }
 
 

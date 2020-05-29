@@ -7,7 +7,6 @@ app.use(bodyParser.json());
 
 app.get('/search', handlers.searchRequest);
 app.get('/test', handlers.testRequest);
-
 app.post('/rating', handlers.ratingRequest);
 
 const PORT = 3000;
