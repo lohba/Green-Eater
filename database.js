@@ -20,11 +20,12 @@ db.query(sql, function (err, result) {
 
 // Insert 
 function insertData(category, location, coordinates, id, sustainability, reviewCount) {
-    let sql = 'INSERT INTO restaurants (category, location, coordinates, id, sustainability, reviewCount) VALUES (category, location, coordinates, id, sustainability, reviewCount)'
-     db.query(sql, function (err, result) {
+    let sql = `INSERT INTO restaurants (category, location, coordinates, id, sustainability, reviewCount) VALUES (${category}, ${location}, ${coordinates}, ${id}, ${sustainability}, ${reviewCount})`
+    console.log(sql); 
+    /*db.query(sql, function (err, result) {
          if (err) throw err;
          console.log(result);
-       })
+       })*/
 }
 
 module.exports = {insertData}

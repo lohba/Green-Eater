@@ -78,28 +78,33 @@ const ratingRequest = function(req, res) {
         if (error) throw new Error(error);
         let jsonData = JSON.parse(response.body);
 
+        var alias = function() {
+            return jsonData.categories.map(function(category) {
+              return category.alias
+            })
+          };
+
         let ratingOutput = {
-            category: jsonData.categories,
-            location: jsonData.location,
-            coordinates: jsonData.coordinates,
+            category: alias().toString(),
+            location: jsonData.location.display_address.toString(),
+            coordinates: Object.values(jsonData.coordinates).toString(),
             id: req.body.id,
             sustainability: req.body.sustainability,
             reviewCount: 1
         };
 
-        if (i < -1) {
+        if (i > -1) {
             places.push(ratingOutput)
             dataBase.insertData(ratingOutput.category, ratingOutput.location, ratingOutput.coordinates, ratingOutput.id, ratingOutput.sustainability, ratingOutput.reviewCount)
+            console.log(ratingOutput)
         } 
+        //console.log(req.body.id)
         res.send(places)
        // console.log(typeof dataBase.insertData )
         
     });
 }
 
-
-//use "id" in POST rating request to pull all rest. data
-// update testData with all the keys
 module.exports = {searchRequest, testRequest, ratingRequest };
 
 
