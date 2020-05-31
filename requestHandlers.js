@@ -25,13 +25,12 @@ const searchRequest = function(req, res) {
             array.push(business);
             
         }
-        //res.send(array)
         res.send(array)
         
     })
 };
 
-const testRequest = function(req, res) {
+const filterRequest = function(req, res) {
 
     let places = testData.testData
     let category = req.query.category;
@@ -45,8 +44,8 @@ const testRequest = function(req, res) {
         }
     }
     let filteredPlaces = places.filter(restaurant => restaurant.location.zip_code === zipcode && containsCategory(restaurant, category))
-    res.send(filteredPlaces)
    
+    res.send(filteredPlaces)
 }
  
 // POST request 
@@ -59,13 +58,15 @@ const ratingRequest = function(req, res) {
     let indexOfData = -1;
     for (var i = 0; i < places.length; i++) {
         if (req.body.id === places[i].id) {
+            places[i].reviewSum += req.body.sustainability
             places[i].reviewCount++
-            let averageRating = (places[i].sustainability + req.body.sustainability) / (places[i].reviewCount)   
+            console.log(places[i].reviewSum)
+            let averageRating = (places[i].reviewSum) / (places[i].reviewCount)   
             places[i].sustainability = averageRating 
             indexOfData = i
         } 
     } 
-    
+
     var options = {
         'method': 'GET',
         'url': `https://api.yelp.com/v3/businesses/${req.body.id}`,
@@ -87,25 +88,28 @@ const ratingRequest = function(req, res) {
         let ratingOutput = {
             category: alias().toString(),
             location: jsonData.location.display_address.toString(),
+            zip: jsonData.location.zip_code,
             coordinates: Object.values(jsonData.coordinates).toString(),
             id: req.body.id,
             sustainability: req.body.sustainability,
-            reviewCount: 1
+            reviewCount: 1,
+            reviewSum: req.body.sustainability
         };
 
-        if (i > -1) {
+        if (indexOfData < 0) {
+            console.log("pushed")
             places.push(ratingOutput)
-            dataBase.insertData(ratingOutput.category, ratingOutput.location, ratingOutput.coordinates, ratingOutput.id, ratingOutput.sustainability, ratingOutput.reviewCount)
-            console.log(ratingOutput)
+            //dataBase.insertData(ratingOutput.category, ratingOutput.location, ratingOutput.zip, ratingOutput.coordinates, ratingOutput.id, ratingOutput.sustainability, ratingOutput.reviewCount)
+            //console.log(typeof ratingOutput.category)
         } 
-        //console.log(req.body.id)
+       // places.push(ratingOutput)
         res.send(places)
        // console.log(typeof dataBase.insertData )
         
     });
 }
 
-module.exports = {searchRequest, testRequest, ratingRequest };
+module.exports = {searchRequest, filterRequest, ratingRequest };
 
 
 

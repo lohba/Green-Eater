@@ -6,7 +6,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.get('/search', handlers.searchRequest);
-app.get('/test', handlers.testRequest);
+app.get('/filter', handlers.filterRequest);
 app.post('/rating', handlers.ratingRequest);
 
 const PORT = 3000;

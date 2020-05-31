@@ -7,7 +7,8 @@
         "id" : "pL2tig3FxJcrZ4wDIO4TsA",
         //"id": "SYQwo6Ikr38GqwKEHuDIpQ",
         "sustainability": 2,
-        "reviewCount": 1
+        "reviewCount": 1,
+        "reviewSum": 0
     },
     {
         "category": ["Japanese"],
@@ -15,7 +16,8 @@
         "coordinates": {"latitude":40.732962,"longitude":-73.9808002},
         "id": "SYQwo6Ikr38GqwKEHuDIpQ",
         "sustainability": 3,
-        "reviewCount": 1
+        "reviewCount": 1,
+        "reviewSum": 0
     }
 ];
 
