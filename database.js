@@ -26,9 +26,19 @@ function insertData(category, location, zip, coordinates, id, sustainability, re
        })
 }
 
-function filterData() {
-    let sql = 'SELECT * FROM restaurants where '
+function filterData(id, reviewCount) {
+    //let sql = 'SELECT * FROM restaurants where '
+   // let sql = `SELECT EXISTS(SELECT id FROM restaurants WHERE id = ('${id}'))`
+   let sql = `UPDATE restaurants SET (rating, reviewCount) VALUES ('${id}','${reviewCount}' ) IF EXISTS (SELECT id FROM restaurants WHERE id = ('${id}'))
+   ELSE INSERT INTO restaurants VALUES New_review)`
+    db.query(sql, function (err, result) {
+        if (err) console.log("no") ;
+        console.log(result)
+    }) 
+    UPDATE Reviews
+SET Reviews.rating = new rating average
+WHERE EXISTS (SELECT ID_column FROM Reviews WHERE Review.ID = New_review.ID
 }
 
 
-module.exports = {insertData}
+module.exports = {insertData, filterData}

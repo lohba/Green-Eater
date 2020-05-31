@@ -31,7 +31,7 @@ const searchRequest = function(req, res) {
 };
 
 const filterRequest = function(req, res) {
-
+//LIKE REQUEST
     let places = testData.testData
     let category = req.query.category;
     let zipcode = req.query.location;
@@ -43,17 +43,20 @@ const filterRequest = function(req, res) {
             }
         }
     }
+   
     let filteredPlaces = places.filter(restaurant => restaurant.location.zip_code === zipcode && containsCategory(restaurant, category))
    
     res.send(filteredPlaces)
 }
+
+
  
 // POST request 
 //ID and sustainabiltiy rating
 //The data sent to the server with POST is stored in the request body of the HTTP request:
 //${id}
 const ratingRequest = function(req, res) {
-
+//QUERY BY ID
     let places = testData.testData;
     let indexOfData = -1;
     for (var i = 0; i < places.length; i++) {
@@ -75,6 +78,8 @@ const ratingRequest = function(req, res) {
         }
     };
      //return 
+   
+
     request(options, function (error, response) { 
         if (error) throw new Error(error);
         let jsonData = JSON.parse(response.body);
@@ -99,14 +104,16 @@ const ratingRequest = function(req, res) {
         if (indexOfData < 0) {
             console.log("pushed")
             places.push(ratingOutput)
-            //dataBase.insertData(ratingOutput.category, ratingOutput.location, ratingOutput.zip, ratingOutput.coordinates, ratingOutput.id, ratingOutput.sustainability, ratingOutput.reviewCount)
+            dataBase.insertData(ratingOutput.category, ratingOutput.location, ratingOutput.zip, ratingOutput.coordinates, ratingOutput.id, ratingOutput.sustainability, ratingOutput.reviewCount)
             //console.log(typeof ratingOutput.category)
         } 
        // places.push(ratingOutput)
         res.send(places)
+        dataBase.filterData(req.body.id)
        // console.log(typeof dataBase.insertData )
         
     });
+    
 }
 
 module.exports = {searchRequest, filterRequest, ratingRequest };
