@@ -26,19 +26,42 @@ function insertData(category, location, zip, coordinates, id, sustainability, re
        })
 }
 
-function filterData(id, reviewCount) {
-    //let sql = 'SELECT * FROM restaurants where '
-   // let sql = `SELECT EXISTS(SELECT id FROM restaurants WHERE id = ('${id}'))`
-   let sql = `UPDATE restaurants SET (rating, reviewCount) VALUES ('${id}','${reviewCount}' ) IF EXISTS (SELECT id FROM restaurants WHERE id = ('${id}'))
-   ELSE INSERT INTO restaurants VALUES New_review)`
+function updateScore(id, sustainability, reviewCount) {
+  //((reviewCount * currSustainability) + newSustainability ) / reviewCount + 1
+    let sql = `UPDATE restaurants SET sustainability = '${sustainability}, reviewCount = '${reviewCount}''`
+    db.query(sql, function (err, result) {
+        if (err) throw err;
+       })
+}
+
+function getEntry(id, cb) {
+    //get the values for the row
+    let sql = `SELECT * FROM  restaurants WHERE id = '${id}'`
+    db.query(sql, function (err, result) {
+         if (err) throw err;
+         cb(result);
+    });
+}
+
+function getEntries(category, zip) {
+    //LIKE
+  
+
+}
+
+// Filter by category and zip
+function ratingRequest(category, location, zip, coordinates, id, sustainability, reviewCount) {
+   
+   let sql = `UPDATE restaurants SET sustainability = '${sustainability}', reviewCount = '${reviewCount}' WHERE EXISTS (SELECT id FROM restaurants WHERE id = ('${id}'))`
+    console.log(sql);
+   // `UPDATE restaurants SET (sustainability, reviewCount) VALUES ('${sustainability}','${reviewCount}') SELECT IF (EXISTS (SELECT id FROM restaurants WHERE id = ('${id}')))
+  // ELSE INSERT INTO restaurants (category, location, zip, coordinates, id, sustainability, reviewCount) VALUES ('${category}', '${location}', '${zip}','${coordinates}', '${id}', '${sustainability}', '${reviewCount}')`
     db.query(sql, function (err, result) {
         if (err) console.log("no") ;
         console.log(result)
     }) 
-    UPDATE Reviews
-SET Reviews.rating = new rating average
-WHERE EXISTS (SELECT ID_column FROM Reviews WHERE Review.ID = New_review.ID
+    
 }
 
 
-module.exports = {insertData, filterData}
+module.exports = {insertData, ratingRequest, getEntry}

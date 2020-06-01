@@ -77,9 +77,6 @@ const ratingRequest = function(req, res) {
             'Authorization': 'Bearer mxBzGh0rfHIhoMZJjbkVdLClsarZFfCf-RtU7U1EzOzN7kEWTHUSCJEB-H_L638R_3D69s1ua7kDOvp5Cza47AqmU1u5YBgOmIwTTZkV5ZqajygKoMI6s-ALVeiAXnYx'
         }
     };
-     //return 
-   
-
     request(options, function (error, response) { 
         if (error) throw new Error(error);
         let jsonData = JSON.parse(response.body);
@@ -97,19 +94,22 @@ const ratingRequest = function(req, res) {
             coordinates: Object.values(jsonData.coordinates).toString(),
             id: req.body.id,
             sustainability: req.body.sustainability,
-            reviewCount: 1,
-            reviewSum: req.body.sustainability
+            reviewCount: 1
         };
 
         if (indexOfData < 0) {
             console.log("pushed")
             places.push(ratingOutput)
-            dataBase.insertData(ratingOutput.category, ratingOutput.location, ratingOutput.zip, ratingOutput.coordinates, ratingOutput.id, ratingOutput.sustainability, ratingOutput.reviewCount)
+            //dataBase.insertData(ratingOutput.category, ratingOutput.location, ratingOutput.zip, ratingOutput.coordinates, ratingOutput.id, ratingOutput.sustainability, ratingOutput.reviewCount)
             //console.log(typeof ratingOutput.category)
         } 
        // places.push(ratingOutput)
-        res.send(places)
-        dataBase.filterData(req.body.id)
+        //res.send(places)
+
+        dataBase.getEntry(req.body.id, function(result) {
+            console.log(result)
+        });
+        //dataBase.filterData(req.body.id)
        // console.log(typeof dataBase.insertData )
         
     });
