@@ -55,20 +55,14 @@ const filterRequest = function(req, res) {
 //ID and sustainabiltiy rating
 //The data sent to the server with POST is stored in the request body of the HTTP request:
 //${id}
+const entryExists = (id) => {
+    dataBase.getEntry(id)
+}
+
+
 const ratingRequest = function(req, res) {
 //QUERY BY ID
-    let places = testData.testData;
-    let indexOfData = -1;
-    for (var i = 0; i < places.length; i++) {
-        if (req.body.id === places[i].id) {
-            places[i].reviewSum += req.body.sustainability
-            places[i].reviewCount++
-            console.log(places[i].reviewSum)
-            let averageRating = (places[i].reviewSum) / (places[i].reviewCount)   
-            places[i].sustainability = averageRating 
-            indexOfData = i
-        } 
-    } 
+    entryExists(req.body.id)
 
     var options = {
         'method': 'GET',
@@ -77,13 +71,14 @@ const ratingRequest = function(req, res) {
             'Authorization': 'Bearer mxBzGh0rfHIhoMZJjbkVdLClsarZFfCf-RtU7U1EzOzN7kEWTHUSCJEB-H_L638R_3D69s1ua7kDOvp5Cza47AqmU1u5YBgOmIwTTZkV5ZqajygKoMI6s-ALVeiAXnYx'
         }
     };
+    
     request(options, function (error, response) { 
         if (error) throw new Error(error);
         let jsonData = JSON.parse(response.body);
 
         var alias = function() {
             return jsonData.categories.map(function(category) {
-              return category.alias
+              return category.alias;
             })
           };
 
@@ -97,18 +92,29 @@ const ratingRequest = function(req, res) {
             reviewCount: 1
         };
 
-        if (indexOfData < 0) {
+        let pushData = -1;
+        dataBase.getEntry(req.body.id, function(err, result) {
+
+            // old sustainability = result[0].sustainability 
+            // new sustainability = ratingOutput.sustainability
+            let averageRating = ((result[0].reviewCount * result[0].sustainability ) + ratingOutput.sustainability ) / (result[0].reviewCount + 1)
+            //result[0].sustainability = averageRating
+            let newRatingCount = result[0].reviewCount ++
+            //dataBase.updateScore(averageRating, newRatingCount)
+            } 
+        );
+
+        if (pushData = -1) {
             console.log("pushed")
-            places.push(ratingOutput)
+            
+            //places.push(ratingOutput)
             //dataBase.insertData(ratingOutput.category, ratingOutput.location, ratingOutput.zip, ratingOutput.coordinates, ratingOutput.id, ratingOutput.sustainability, ratingOutput.reviewCount)
             //console.log(typeof ratingOutput.category)
         } 
        // places.push(ratingOutput)
         //res.send(places)
 
-        dataBase.getEntry(req.body.id, function(result) {
-            console.log(result)
-        });
+ 
         //dataBase.filterData(req.body.id)
        // console.log(typeof dataBase.insertData )
         

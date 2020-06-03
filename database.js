@@ -12,7 +12,7 @@ db.connect(function(err) {
   console.log("Connected!");
 });
 
-let sql = 'CREATE TABLE IF NOT EXISTS restaurants (num INT AUTO_INCREMENT PRIMARY KEY, category VARCHAR(255), location VARCHAR(255), zip VARCHAR(255), coordinates VARCHAR(255), id VARCHAR(255), sustainability VARCHAR(255), reviewCount VARCHAR(255))';
+let sql = 'CREATE TABLE IF NOT EXISTS restaurants (num INT AUTO_INCREMENT PRIMARY KEY, category VARCHAR(255), location VARCHAR(255), zip VARCHAR(255), coordinates VARCHAR(255), id VARCHAR(255), sustainability INT(255), reviewCount INT(255))';
 db.query(sql, function (err, result) {
   if (err) throw err;
   console.log("created");
@@ -26,20 +26,21 @@ function insertData(category, location, zip, coordinates, id, sustainability, re
        })
 }
 
-function updateScore(id, sustainability, reviewCount) {
+function updateScore(sustainability, reviewCount) {
   //((reviewCount * currSustainability) + newSustainability ) / reviewCount + 1
-    let sql = `UPDATE restaurants SET sustainability = '${sustainability}, reviewCount = '${reviewCount}''`
+    let sql = `UPDATE restaurants SET sustainability = ${sustainability}, reviewCount = ${reviewCount}`
     db.query(sql, function (err, result) {
         if (err) throw err;
+        console.log(result)
        })
 }
 
-function getEntry(id, cb) {
+function getEntry(id) {
     //get the values for the row
     let sql = `SELECT * FROM  restaurants WHERE id = '${id}'`
     db.query(sql, function (err, result) {
-         if (err) throw err;
-         cb(result);
+
+         console.log(result.length)
     });
 }
 
@@ -58,10 +59,10 @@ function ratingRequest(category, location, zip, coordinates, id, sustainability,
   // ELSE INSERT INTO restaurants (category, location, zip, coordinates, id, sustainability, reviewCount) VALUES ('${category}', '${location}', '${zip}','${coordinates}', '${id}', '${sustainability}', '${reviewCount}')`
     db.query(sql, function (err, result) {
         if (err) console.log("no") ;
-        console.log(result)
+        console.log( result)
     }) 
     
 }
 
 
-module.exports = {insertData, ratingRequest, getEntry}
+module.exports = {insertData, ratingRequest, getEntry, updateScore}
