@@ -55,14 +55,39 @@ const filterRequest = function(req, res) {
 //ID and sustainabiltiy rating
 //The data sent to the server with POST is stored in the request body of the HTTP request:
 //${id}
-const entryExists = (id) => {
-    dataBase.getEntry(id)
+const updateEntry = () => {
+    dataBase.updateScore(sustainability, reviewCount, function(err, result) {
+        console.log(result)
+    })
 }
 
+//#2
+const updateExisting = (result, cb) => {
+let newRatingCount = result[0].reviewCount+1
+console.log(newRatingCount)
+};
+
+const createNewEntry = (cb) => {
+//update two entries
+
+};
 
 const ratingRequest = function(req, res) {
-//QUERY BY ID
-    entryExists(req.body.id)
+    const sendResponse = (err) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.send(200); 
+        }
+    };
+//#1
+    dataBase.getEntry(req.body.id, function(err, result) {
+        if (result.length = 1) {
+            updateExisting(result, sendResponse);
+        } else {
+            createNewEntry(sendResponse);
+        }
+   });
 
     var options = {
         'method': 'GET',
@@ -81,7 +106,7 @@ const ratingRequest = function(req, res) {
               return category.alias;
             })
           };
-
+          
         let ratingOutput = {
             category: alias().toString(),
             location: jsonData.location.display_address.toString(),
@@ -91,26 +116,40 @@ const ratingRequest = function(req, res) {
             sustainability: req.body.sustainability,
             reviewCount: 1
         };
+        
+        //let averageRating = ((result[0].reviewCount * result[0].sustainability ) + ratingOutput.sustainability ) / (result[0].reviewCount + 1)
+        //let newRatingCount = result[0].reviewCount ++
+        // console.log(averageRating)
+        // console.log(newRatingCount) 
+        
+    });
+  }
 
-        let pushData = -1;
-        dataBase.getEntry(req.body.id, function(err, result) {
+module.exports = {searchRequest, filterRequest, ratingRequest, updateEntry};
+
+
+
+
+
+//let pushData = -1;
+        //dataBase.getEntry(req.body.id, function(err, result) {
 
             // old sustainability = result[0].sustainability 
             // new sustainability = ratingOutput.sustainability
-            let averageRating = ((result[0].reviewCount * result[0].sustainability ) + ratingOutput.sustainability ) / (result[0].reviewCount + 1)
+            //let averageRating = ((result[0].reviewCount * result[0].sustainability ) + ratingOutput.sustainability ) / (result[0].reviewCount + 1)
             //result[0].sustainability = averageRating
-            let newRatingCount = result[0].reviewCount ++
+            //let newRatingCount = result[0].reviewCount ++
             //dataBase.updateScore(averageRating, newRatingCount)
-            } 
-        );
+            //} 
+        //);
 
-        if (pushData = -1) {
-            console.log("pushed")
+        //if (pushData = -1) {
+            //console.log("pushed")
             
             //places.push(ratingOutput)
             //dataBase.insertData(ratingOutput.category, ratingOutput.location, ratingOutput.zip, ratingOutput.coordinates, ratingOutput.id, ratingOutput.sustainability, ratingOutput.reviewCount)
             //console.log(typeof ratingOutput.category)
-        } 
+        //} 
        // places.push(ratingOutput)
         //res.send(places)
 
@@ -118,17 +157,6 @@ const ratingRequest = function(req, res) {
         //dataBase.filterData(req.body.id)
        // console.log(typeof dataBase.insertData )
         
-    });
-    
-}
-
-module.exports = {searchRequest, filterRequest, ratingRequest };
-
-
-
-
-
-
 
 
 

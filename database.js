@@ -30,17 +30,16 @@ function updateScore(sustainability, reviewCount) {
   //((reviewCount * currSustainability) + newSustainability ) / reviewCount + 1
     let sql = `UPDATE restaurants SET sustainability = ${sustainability}, reviewCount = ${reviewCount}`
     db.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log(result)
+        if (err) throw err
        })
 }
 
-function getEntry(id) {
+function getEntry(id, cb) {
     //get the values for the row
     let sql = `SELECT * FROM  restaurants WHERE id = '${id}'`
     db.query(sql, function (err, result) {
-
-         console.log(result.length)
+         if (err) throw err;
+         cb(err, result);
     });
 }
 
