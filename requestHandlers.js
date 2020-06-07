@@ -49,46 +49,24 @@ const filterRequest = function(req, res) {
     res.send(filteredPlaces)
 }
 
-
- 
 // POST request 
 //ID and sustainabiltiy rating
 //The data sent to the server with POST is stored in the request body of the HTTP request:
 //${id}
-const updateEntry = () => {
-    dataBase.updateScore(sustainability, reviewCount, function(err, result) {
-        console.log(result)
+const updateEntry = (id, sustainability, reviewCount) => {
+    dataBase.updateScore(id, sustainability, reviewCount, function(err, result) {
     })
 }
-
 //#2
-const updateExisting = (result, cb) => {
-let newRatingCount = result[0].reviewCount+1
-console.log(newRatingCount)
+const updateExisting = (id, result, newRating, cb) => {
+    let averageRating = ((result[0].reviewCount * result[0].sustainability ) + newRating ) / (result[0].reviewCount + 1)
+    let newRatingCount = result[0].reviewCount + 1
+    console.log(result[0].reviewCount )
+    updateEntry(id, averageRating, newRatingCount)
 };
 
-const createNewEntry = (cb) => {
-//update two entries
-
-};
-
-const ratingRequest = function(req, res) {
-    const sendResponse = (err) => {
-        if (err) {
-            res.status(500).send(err);
-        } else {
-            res.send(200); 
-        }
-    };
-//#1
-    dataBase.getEntry(req.body.id, function(err, result) {
-        if (result.length = 1) {
-            updateExisting(result, sendResponse);
-        } else {
-            createNewEntry(sendResponse);
-        }
-   });
-
+const yelpRequest = function(req, cb) {
+    //console.log(req)
     var options = {
         'method': 'GET',
         'url': `https://api.yelp.com/v3/businesses/${req.body.id}`,
@@ -108,25 +86,41 @@ const ratingRequest = function(req, res) {
           };
           
         let ratingOutput = {
-            category: alias().toString(),
+            category: alias(),
             location: jsonData.location.display_address.toString(),
             zip: jsonData.location.zip_code,
             coordinates: Object.values(jsonData.coordinates).toString(),
             id: req.body.id,
             sustainability: req.body.sustainability,
             reviewCount: 1
-        };
-        
-        //let averageRating = ((result[0].reviewCount * result[0].sustainability ) + ratingOutput.sustainability ) / (result[0].reviewCount + 1)
-        //let newRatingCount = result[0].reviewCount ++
-        // console.log(averageRating)
-        // console.log(newRatingCount) 
-        
-    });
-  }
+        }
+        cb(ratingOutput.category, ratingOutput.location, ratingOutput.zip, ratingOutput.coordinates, ratingOutput.id, ratingOutput.sustainability, ratingOutput.reviewCount);
+     })
+   }
+
+const createNewEntry = (req, cb) => {
+    yelpRequest(req,dataBase.insertData)    
+};
+
+const ratingRequest = (req, res) => {
+    const sendResponse = (err) => {
+        if (err) {
+            res.status(500).sendStatus(err);
+        } else {
+            res.send(200); 
+        }
+    };
+    dataBase.getEntry(req.body.id, function(err, result) {
+        if (result.length > 0) {
+            updateExisting(req.body.id, result, req.body.sustainability, sendResponse);
+        } else {
+            createNewEntry(req, sendResponse);
+        }
+   });
+}
 
 module.exports = {searchRequest, filterRequest, ratingRequest, updateEntry};
-
+//updateEntry
 
 
 

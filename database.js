@@ -26,25 +26,28 @@ function insertData(category, location, zip, coordinates, id, sustainability, re
        })
 }
 
-function updateScore(sustainability, reviewCount) {
+//Update
+function updateScore(id, sustainability, reviewCount) {
   //((reviewCount * currSustainability) + newSustainability ) / reviewCount + 1
-    let sql = `UPDATE restaurants SET sustainability = ${sustainability}, reviewCount = ${reviewCount}`
+    let sql = `UPDATE restaurants SET sustainability = '${sustainability}', reviewCount = '${reviewCount}' WHERE id='${id}'`
     db.query(sql, function (err, result) {
         if (err) throw err
-       })
+       }) 
 }
 
+//Get Entry
 function getEntry(id, cb) {
-    //get the values for the row
     let sql = `SELECT * FROM  restaurants WHERE id = '${id}'`
     db.query(sql, function (err, result) {
          if (err) throw err;
          cb(err, result);
+         //console.log(result.length)
     });
 }
 
 function getEntries(category, zip) {
     //LIKE
+    
   
 
 }
@@ -58,7 +61,7 @@ function ratingRequest(category, location, zip, coordinates, id, sustainability,
   // ELSE INSERT INTO restaurants (category, location, zip, coordinates, id, sustainability, reviewCount) VALUES ('${category}', '${location}', '${zip}','${coordinates}', '${id}', '${sustainability}', '${reviewCount}')`
     db.query(sql, function (err, result) {
         if (err) console.log("no") ;
-        console.log( result)
+        console.log(result)
     }) 
     
 }
