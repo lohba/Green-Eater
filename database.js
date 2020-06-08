@@ -19,41 +19,36 @@ db.query(sql, function (err, result) {
 });
 
 // Insert 
-function insertData(category, location, zip, coordinates, id, sustainability, reviewCount) {
+function insertData(data, cb) {
+    let {category, location, zip, coordinates, id, sustainability, reviewCount} = data;
+
     let sql = `INSERT INTO restaurants (category, location, zip, coordinates, id, sustainability, reviewCount) VALUES ('${category}', '${location}', '${zip}','${coordinates}', '${id}', '${sustainability}', '${reviewCount}')`
-    db.query(sql, function (err, result) {
-         if (err) throw err;
-       })
+    db.query(sql, cb)
 }
 
 //Update
-function updateScore(id, sustainability, reviewCount) {
-  //((reviewCount * currSustainability) + newSustainability ) / reviewCount + 1
+function updateScore(id, sustainability, reviewCount, cb) {
     let sql = `UPDATE restaurants SET sustainability = '${sustainability}', reviewCount = '${reviewCount}' WHERE id='${id}'`
-    db.query(sql, function (err, result) {
-        if (err) throw err
-       }) 
-}
+    db.query(sql, cb); 
+};
 
 //Get Entry
 function getEntry(id, cb) {
     let sql = `SELECT * FROM  restaurants WHERE id = '${id}'`
+    db.query(sql, cb);
+}
+//Get Entries
+function getEntries(category, zip) {
+    let sql = `SELECT * FROM  restaurants WHERE zip = '${zip}' AND CATEGORY LIKE '%${category}'`
     db.query(sql, function (err, result) {
          if (err) throw err;
          cb(err, result);
-         //console.log(result.length)
+         console.log(sql)
     });
 }
 
-function getEntries(category, zip) {
-    //LIKE
-    
-  
-
-}
-
 // Filter by category and zip
-function ratingRequest(category, location, zip, coordinates, id, sustainability, reviewCount) {
+function ratingRequest(categoryy, location, zip, coordinates, id, sustainability, reviewCount) {
    
    let sql = `UPDATE restaurants SET sustainability = '${sustainability}', reviewCount = '${reviewCount}' WHERE EXISTS (SELECT id FROM restaurants WHERE id = ('${id}'))`
     console.log(sql);
@@ -67,4 +62,4 @@ function ratingRequest(category, location, zip, coordinates, id, sustainability,
 }
 
 
-module.exports = {insertData, ratingRequest, getEntry, updateScore}
+module.exports = {insertData, ratingRequest, getEntry, updateScore, getEntries}
