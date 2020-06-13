@@ -32,7 +32,6 @@ const searchRequest = function(req, res) {
 
 const responseSender = function(res) {
     return function(err) {
-        console.log("yoyoyoyo")
         if (err) {
             res.status(500).sendStatus(err);
         } else {
@@ -41,24 +40,24 @@ const responseSender = function(res) {
     };
 }
 
-const filterRequest = function(req, res) {
-//LIKE REQUEST
-    let places = testData.testData
-    let category = req.query.category;
-    let zipcode = req.query.location;
+// const filterRequest = function(req, res) {
+// //LIKE REQUEST
+//     let places = testData.testData
+//     let category = req.query.category;
+//     let zipcode = req.query.location;
 
-    function containsCategory(restaurant, category) {
-        for (let i = 0; i < restaurant.category.length ; i++) {
-            if (restaurant.category[i] === category) {
-                return true
-            }
-        }
-    }
+//     function containsCategory(restaurant, category) {
+//         for (let i = 0; i < restaurant.category.length ; i++) {
+//             if (restaurant.category[i] === category) {
+//                 return true
+//             }
+//         }
+//     }
    
-    let filteredPlaces = places.filter(restaurant => restaurant.location.zip_code === zipcode && containsCategory(restaurant, category))
+//     let filteredPlaces = places.filter(restaurant => restaurant.location.zip_code === zipcode && containsCategory(restaurant, category))
    
-    res.send(filteredPlaces)
-}
+//     res.send(filteredPlaces)
+// }
 
 // POST request 
 //ID and sustainabiltiy rating
@@ -88,7 +87,7 @@ const yelpRequest = function(req, cb) {
             cb(error);
         }
         let jsonData = JSON.parse(response.body);
-
+        
         var alias = function() {
             return jsonData.categories.map(function(category) {
               return category.alias;
@@ -96,6 +95,7 @@ const yelpRequest = function(req, cb) {
           };
           
         let ratingOutput = {
+            name: jsonData.name,
             category: alias(),
             location: jsonData.location.display_address.toString(),
             zip: jsonData.location.zip_code,
@@ -110,7 +110,6 @@ const yelpRequest = function(req, cb) {
    }
 
 const createNewEntry = (req, cb) => {
-
     const yelpCb = (err, yelpResult) => {
         if (err) {
             cb(err)
@@ -118,15 +117,13 @@ const createNewEntry = (req, cb) => {
             dataBase.insertData(yelpResult, cb);
         }
     };
-
     yelpRequest(req, yelpCb);    
 };
 
 const ratingRequest = (req, res) => {
     const sendResponse = responseSender(res);
-
     dataBase.getEntry(req.body.id, function(err, result) {
-        console.log('got entry ' + JSON.stringify(result));
+        //console.log('got entry ' + JSON.stringify(result));
         if (result.length > 0) {
             updateExisting(req.body.id, result, req.body.sustainability, sendResponse);
         } else {
@@ -136,23 +133,18 @@ const ratingRequest = (req, res) => {
 }
 
 const categoryRequest = (req, res) => {
-    const sendResponse = (err) => {
-        if (err) {
-            res.status(500).sendStatus(err);
-        } else {
-            res.send(200); 
-        }
-    };
-    dataBase.getEntries(req.query.cateogry, function(err, result) {
+    const sendResponse = responseSender(res);
+    dataBase.getEntries(req.body.zip, req.body.category, function(err, result) {
         if (result.length > 0) {
-            updateExisting(req.body.id, result, req.body.sustainability, sendResponse);
+            console.log(result.length) 
         } else {
-            createNewEntry(req, sendResponse);
+            //createNewEntry(req, sendResponse);
+            //console.log(result)
         }
    });
 }
 
-module.exports = {searchRequest, filterRequest, ratingRequest, updateEntry};
+module.exports = {searchRequest, ratingRequest, updateEntry, categoryRequest};
 //updateEntry
 
 
