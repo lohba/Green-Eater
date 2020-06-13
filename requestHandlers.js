@@ -11,58 +11,35 @@ const searchRequest = function(req, res) {
         }
     }
 
-    request(options, function(error, response) {
-        if (error) throw new Error(error);
-        let jsonData = JSON.parse(response.body);
-        let array = []
-        for (let i = 0; i < jsonData.businesses.length; i++) {
-            let business = {
-                name: jsonData.businesses[i].name,
-                location: jsonData.businesses[i].location,
-                coordinates: jsonData.businesses[i].coordinates,
-                id: jsonData.businesses[i].id
-            };
-            array.push(business);
-            
-        }
-        res.send(array)
-        
-    })
+    // request(options, function(error, response) {
+    //     if (error) throw new Error(error);
+    //     let jsonData = JSON.parse(response.body);
+    //     let array = []
+    //     for (let i = 0; i < jsonData.businesses.length; i++) {
+    //         let business = {
+    //             name: jsonData.businesses[i].name,
+    //             location: jsonData.businesses[i].location,
+    //             coordinates: jsonData.businesses[i].coordinates,
+    //             id: jsonData.businesses[i].id
+    //         };
+    //         array.push(business);            
+    //     }
+    //     res.send(array)
+    // })
 };
 
 const responseSender = function(res) {
-    return function(err) {
+    return function(err, result) {
         if (err) {
             res.status(500).sendStatus(err);
         } else {
-            res.sendStatus(200); 
+            //res.sendStatus(200); 
+            res.send(result)
         }
     };
 }
 
-// const filterRequest = function(req, res) {
-// //LIKE REQUEST
-//     let places = testData.testData
-//     let category = req.query.category;
-//     let zipcode = req.query.location;
-
-//     function containsCategory(restaurant, category) {
-//         for (let i = 0; i < restaurant.category.length ; i++) {
-//             if (restaurant.category[i] === category) {
-//                 return true
-//             }
-//         }
-//     }
-   
-//     let filteredPlaces = places.filter(restaurant => restaurant.location.zip_code === zipcode && containsCategory(restaurant, category))
-   
-//     res.send(filteredPlaces)
-// }
-
-// POST request 
-//ID and sustainabiltiy rating
-//The data sent to the server with POST is stored in the request body of the HTTP request:
-//${id}
+//#1
 const updateEntry = (id, sustainability, reviewCount, cb) => {
     dataBase.updateScore(id, sustainability, reviewCount, cb);
 }
@@ -72,7 +49,7 @@ const updateExisting = (id, result, newRating, cb) => {
     let newRatingCount = result[0].reviewCount + 1
     updateEntry(id, averageRating, newRatingCount, cb)
 };
-
+//#3
 const yelpRequest = function(req, cb) {
     var options = {
         'method': 'GET',
@@ -123,7 +100,6 @@ const createNewEntry = (req, cb) => {
 const ratingRequest = (req, res) => {
     const sendResponse = responseSender(res);
     dataBase.getEntry(req.body.id, function(err, result) {
-        //console.log('got entry ' + JSON.stringify(result));
         if (result.length > 0) {
             updateExisting(req.body.id, result, req.body.sustainability, sendResponse);
         } else {
@@ -136,15 +112,14 @@ const categoryRequest = (req, res) => {
     const sendResponse = responseSender(res);
     dataBase.getEntries(req.body.zip, req.body.category, function(err, result) {
         if (result.length > 0) {
-            console.log(result.length) 
+            sendResponse(err,result)
         } else {
-            //createNewEntry(req, sendResponse);
-            //console.log(result)
+            res.send("No Result")
         }
    });
 }
 
-module.exports = {searchRequest, ratingRequest, updateEntry, categoryRequest};
+module.exports = {searchRequest, ratingRequest, categoryRequest};
 //updateEntry
 
 

@@ -39,10 +39,8 @@ function getEntry(id, cb) {
 //Get Entries
 function getEntries(zip, category, cb) {
     let sql = `SELECT * FROM  restaurants WHERE (zip = '${zip}') AND CATEGORY LIKE '%${category}%'`
-    //let sql = `SELECT * FROM  restaurants WHERE zip = '${zip}' and where ca`
     db.query(sql, cb)
 }
-
 // Filter by category and zip
 // function ratingRequest(categoryy, location, zip, coordinates, id, sustainability, reviewCount) {
    
