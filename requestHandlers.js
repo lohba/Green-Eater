@@ -1,5 +1,4 @@
 var request = require('request');
-var testData = require('./testData');
 var dataBase = require('./database');
 
 const searchRequest = function(req, res) {
@@ -11,21 +10,21 @@ const searchRequest = function(req, res) {
         }
     }
 
-    // request(options, function(error, response) {
-    //     if (error) throw new Error(error);
-    //     let jsonData = JSON.parse(response.body);
-    //     let array = []
-    //     for (let i = 0; i < jsonData.businesses.length; i++) {
-    //         let business = {
-    //             name: jsonData.businesses[i].name,
-    //             location: jsonData.businesses[i].location,
-    //             coordinates: jsonData.businesses[i].coordinates,
-    //             id: jsonData.businesses[i].id
-    //         };
-    //         array.push(business);            
-    //     }
-    //     res.send(array)
-    // })
+    request(options, function(error, response) {
+        if (error) throw new Error(error);
+        let jsonData = JSON.parse(response.body);
+        let array = []
+        for (let i = 0; i < jsonData.businesses.length; i++) {
+            let business = {
+                name: jsonData.businesses[i].name,
+                location: jsonData.businesses[i].location,
+                coordinates: jsonData.businesses[i].coordinates,
+                id: jsonData.businesses[i].id
+            };
+            array.push(business);            
+        }
+        res.send(array)
+    })
 };
 
 const responseSender = function(res) {
@@ -81,7 +80,6 @@ const yelpRequest = function(req, cb) {
             sustainability: req.body.sustainability,
             reviewCount: 1
         };
-
         cb(undefined, ratingOutput);
      })
    }
