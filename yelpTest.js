@@ -1,67 +1,68 @@
-var request = require('request');
+var request = require("request");
 var myArgs = process.argv.slice(2);
-var request = require('request');
 
 function searchRequest() {
-    var options = {
-    'method': 'GET',
-    'url': `http://localhost:3000/search?location=${myArgs[1]}&term=${myArgs[2]}`,
-    'headers': {
-    }
-    };
-    request(options, function (error, response) { 
+  var options = {
+    method: "GET",
+    url: `http://localhost:3000/search?location=${myArgs[1]}&term=${myArgs[2]}`,
+    headers: {},
+  };
+  request(options, function (error, response) {
     if (error) throw new Error(error);
     console.log(response.body);
-    });
+  });
 }
 
+//node myArgs searchRequest 10009 coffee
 
 function categoryRequest() {
-    var options = {
-        'method': 'POST',
-        'url': 'http://localhost:3000/category',
-        'headers': {
-          'Authorization': 'Bearer mxBzGh0rfHIhoMZJjbkVdLClsarZFfCf-RtU7U1EzOzN7kEWTHUSCJEB-H_L638R_3D69s1ua7kDOvp5Cza47AqmU1u5YBgOmIwTTZkV5ZqajygKoMI6s-ALVeiAXnYx',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({"zip":myArgs[1],"category":myArgs[2]})
-      
-      };
-      request(options, function (error, response) { 
-        if (error) throw new Error(error);
-        console.log(response.body);
-      });
-      
+  var options = {
+    method: "POST",
+    url: "http://localhost:3000/category",
+    headers: {
+      Authorization:
+        "Bearer mxBzGh0rfHIhoMZJjbkVdLClsarZFfCf-RtU7U1EzOzN7kEWTHUSCJEB-H_L638R_3D69s1ua7kDOvp5Cza47AqmU1u5YBgOmIwTTZkV5ZqajygKoMI6s-ALVeiAXnYx",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ zip: myArgs[1], category: myArgs[2] }),
+  };
+  request(options, function (error, response) {
+    if (error) throw new Error(error);
+    console.log(response.body);
+  });
 }
 function ratingRequest() {
-var options = {
-    'method': 'POST',
-    'url': 'http://localhost:3000/rating',
-    'headers': {
-      'Authorization': 'Bearer mxBzGh0rfHIhoMZJjbkVdLClsarZFfCf-RtU7U1EzOzN7kEWTHUSCJEB-H_L638R_3D69s1ua7kDOvp5Cza47AqmU1u5YBgOmIwTTZkV5ZqajygKoMI6s-ALVeiAXnYx',
-      'Content-Type': 'application/json'
+  var options = {
+    method: "POST",
+    url: "http://localhost:3000/rating",
+    headers: {
+      Authorization:
+        "Bearer mxBzGh0rfHIhoMZJjbkVdLClsarZFfCf-RtU7U1EzOzN7kEWTHUSCJEB-H_L638R_3D69s1ua7kDOvp5Cza47AqmU1u5YBgOmIwTTZkV5ZqajygKoMI6s-ALVeiAXnYx",
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({"id":myArgs[1],"sustainability":myArgs[2]})
-  
+    body: JSON.stringify({ id: myArgs[1], sustainability: myArgs[2] }),
   };
-  request(options, function (error, response) { 
+  request(options, function (error, response) {
     if (error) throw new Error(error);
     console.log(response.body);
   });
 }
 
 switch (myArgs[0]) {
-    case 'searchRequest':
-        searchRequest();
-        break;
-    case 'categoryRequest':
-        categoryRequest(myArgs);
-        break;
-    case 'ratingRequest':
-        ratingRequest(myArgs);
-        break;
+  case "searchRequest":
+    searchRequest();
+    break;
+  case "categoryRequest":
+    categoryRequest(myArgs);
+    break;
+  case "ratingRequest":
+    ratingRequest(myArgs);
+    break;
 }
 
+console.log(myArgs[0]);
+
+//Create Write Review Page which pulls restaurant name and zip from Yelp API. From this page you can rate sustainability rating.
 
 // function searchRequest() {
 //     var options = {
@@ -83,7 +84,7 @@ switch (myArgs[0]) {
 //                 coordinates: jsonData.businesses[i].coordinates,
 //                 id: jsonData.businesses[i].id
 //             };
-//             array.push(business);            
+//             array.push(business);
 //         }
 //         console.log(array)
 //         //res.send(array)
@@ -96,7 +97,7 @@ switch (myArgs[0]) {
 //             //console.log(res.status(500).sendStatus(err));
 //             console.log(res)
 //         } else {
-//             //res.sendStatus(200); 
+//             //res.sendStatus(200);
 //             console.log(result)//res.send(result)
 //         }
 //     };
@@ -132,19 +133,19 @@ switch (myArgs[0]) {
 //             'Authorization': 'Bearer mxBzGh0rfHIhoMZJjbkVdLClsarZFfCf-RtU7U1EzOzN7kEWTHUSCJEB-H_L638R_3D69s1ua7kDOvp5Cza47AqmU1u5YBgOmIwTTZkV5ZqajygKoMI6s-ALVeiAXnYx'
 //         }
 //     };
-    
-//     request(options, function (error, response) { 
+
+//     request(options, function (error, response) {
 //         if (error) {
 //             cb(error);
 //         }
 //         let jsonData = JSON.parse(response.body);
-        
+
 //         var alias = function() {
 //             return jsonData.categories.map(function(category) {
 //               return category.alias;
 //             })
 //           };
-          
+
 //         let ratingOutput = {
 //             name: jsonData.name,
 //             category: alias(),
@@ -168,7 +169,7 @@ switch (myArgs[0]) {
 //             console.log(yelpResult)
 //             //dataBase.insertData(yelpResult, cb);
 //         }
-//     }; 
+//     };
 //     yelpRequest(myArgs, yelpCb)
 // };
 
@@ -185,13 +186,13 @@ switch (myArgs[0]) {
 // }
 
 switch (myArgs[0]) {
-    case 'searchRequest':
-        searchRequest();
-        break;
-    case 'categoryRequest':
-        categoryRequest(myArgs);
-        break;
-    case 'ratingRequest':
-        ratingRequest(myArgs);
-        break;
+  case "searchRequest":
+    searchRequest();
+    break;
+  case "categoryRequest":
+    categoryRequest(myArgs);
+    break;
+  case "ratingRequest":
+    ratingRequest(myArgs);
+    break;
 }
